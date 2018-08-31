@@ -1,0 +1,1 @@
+See Examples.ahk for details
