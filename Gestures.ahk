@@ -2,14 +2,14 @@
 
 class gestures {
     __new(opt:="") {
-        opt0:={angle_tolerance:0.25, size_tolerance:A_ScreenHeight//12, scaling:True}
+        opt0:={angle_tolerance:0.25, size_tolerance:A_ScreenHeight//8, scaling:True}
        ,this.opt:=replaceList(opt0, opt), this.dTheta:=this.opt.angle_tolerance, this.dr:=this.opt.size_tolerance
        ,this.tracker:=ObjBindMethod(this, "trackMouse")
        ,this.list:=[], this.points:=[]
 
     }
 
-    add(gesture,f,opt:="") {
+    add(gesture,f,name:="",opt:="") {
 
         ; Make gesture/options into standard form
         if !isObject(gesture)
@@ -32,7 +32,9 @@ class gestures {
         this.dTheta:=min(opt.angle_tolerance, this.dTheta)
        ,this.dr:=min(opt.size_tolerance, this.dr)
 
-        this.list.push({gesture:gesture,f:f,opt:opt})
+       ,name:= name? name: f.name()
+
+       ,this.list.push({ gesture:gesture, name:name, f:f, opt:opt })
         return true
     }
 
@@ -64,6 +66,8 @@ class gestures {
             if this.checkGesture(item) {
                 ;msgbox "Triggered"
                 triggered:=True
+                tooltip(item.name " Gesture")
+               ,setTimer("tooltip", 1000)
                ,item.f.Call()
                 break
             }
